@@ -10,6 +10,9 @@ var view = {
   displayMiss: function (location) {
     var cell = document.getElementById(location);
     cell.setAttribute("class", "miss");
+  },
+  turnOffForm: function() {
+     document.getElementById('formulier').style.visibility = 'hidden';
   }
 }
 
@@ -77,8 +80,20 @@ var controller = {
   guesses: 0,
 
   processGuess: function (guess) {
-  //  more code will follow
+    var location = parseGuess(guess);
+    if (location) {
+      this.guesses++;
+      var hit = model.fire(location);
+      if (hit && model.shipsSunk === model.numShips) {
+        view.displayMessage("You sank all my battleships, in " +
+        this.guesses + " guesses");
+        view.turnOffForm();
+      }
+    }
   }
+
+
+
 
 };
 
@@ -102,9 +117,46 @@ function parseGuess(guess) {
   return null;
 }
 
+// console.log(parseGuess("A0"));
+// console.log(parseGuess("B6"));
+// console.log(parseGuess("G3"));
+// console.log(parseGuess("H0"));
+// console.log(parseGuess("A7"));
 
-console.log(parseGuess("A0"));
-console.log(parseGuess("B6"));
-console.log(parseGuess("G3"));
-console.log(parseGuess("H0"));
-console.log(parseGuess("A7"));
+// controller.processGuess("A0");
+// controller.processGuess("A6");
+// controller.processGuess("B6");
+// controller.processGuess("C6");
+// controller.processGuess("C4");
+// controller.processGuess("D4");
+// controller.processGuess("E4");
+// controller.processGuess("B0");
+// controller.processGuess("B1");
+// controller.processGuess("B2");
+
+function handleFireButton() {
+  var guessInput = document.getElementById('guessInput');
+  var guess = guessInput.value;
+  controller.processGuess(guess);
+  guessInput.value = "";
+}
+
+function handleKeyPress(e) {
+  var fireButton = document.getElementById('fireButton');
+  if (e.keyCode === 13) {
+    fireButton.click();
+    return false;
+  }
+}
+
+function init() {
+  var fireButton = document.getElementById('fireButton');
+  fireButton.addEventListener('click', handleFireButton);
+
+  var guessInput = document.getElementById('guessInput');
+  guessInput.onkeypress = handleKeyPress;
+}
+
+window.onload = init;
+
+
