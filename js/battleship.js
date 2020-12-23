@@ -23,9 +23,9 @@ var model = {
   shipsSunk : 0,
 
   ships : [
-    {locations: ["06","16","26"], hits: ["", "", ""]},
-    {locations: ["24","34","44"], hits: ["", "", ""]},
-    {locations: ["10","11","12"], hits: ["", "", ""]}
+    {locations: [0,0,0], hits: ["", "", ""]},
+    {locations: [0,0,0], hits: ["", "", ""]},
+    {locations: [0,0,0], hits: ["", "", ""]}
   ],
 
   fire : function (guess) {
@@ -94,6 +94,18 @@ var model = {
     }
     return newShipLocations;
   },
+
+  collision: function (locations) {
+    for (var i=0; i < this.numShips;i++) {
+      var ship = model.ships[i];
+      for (var j=0; j < this.shipLength; j++) {
+        if (ship.locations.indexOf(locations[j]) >= 0) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 };
 
 // console.log(model.fire('10'));
@@ -183,6 +195,8 @@ function init() {
 
   var guessInput = document.getElementById('guessInput');
   guessInput.onkeypress = handleKeyPress;
+
+  model.generateShipLocations();
 }
 
 window.onload = init;
